@@ -31,6 +31,8 @@ run:
   script:
     - echo "Trying to pull image from AWS ECR"
     - docker pull ${IMAGE_NAME}
+    - pwd
+    - docker ps 
     - docker compose -f docker-compose.yml up -d
   only: 
     - tags 
