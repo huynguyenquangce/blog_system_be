@@ -16,8 +16,6 @@ services:
       - '3000:80'
     networks:
       - be-networks
-    depends_on:
-      - be
 networks:
   be-networks:
     driver: bridge
