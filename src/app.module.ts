@@ -3,9 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+// DatabaseModule
 @Module({
   imports: [
-    DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
