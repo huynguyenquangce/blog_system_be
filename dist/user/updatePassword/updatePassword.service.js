@@ -6,16 +6,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DatabaseModule = void 0;
+exports.updatePasswordService = void 0;
 const common_1 = require("@nestjs/common");
-const database_service_1 = require("./database.service");
-let DatabaseModule = class DatabaseModule {
+let updatePasswordService = class updatePasswordService {
 };
-exports.DatabaseModule = DatabaseModule;
-exports.DatabaseModule = DatabaseModule = __decorate([
-    (0, common_1.Module)({
-        providers: [...database_service_1.databaseProviders],
-        exports: [...database_service_1.databaseProviders],
-    })
-], DatabaseModule);
-//# sourceMappingURL=database.module.js.map
+exports.updatePasswordService = updatePasswordService;
+exports.updatePasswordService = updatePasswordService = __decorate([
+    (0, common_1.Injectable)()
+], updatePasswordService);
+//# sourceMappingURL=updatePassword.service.js.map
