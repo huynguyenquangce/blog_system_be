@@ -1,11 +1,9 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_PIPE } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './modules/user/user.model';
+import { DatabaseModule } from './database/database.module';
 // DatabaseModule
 @Module({
   imports: [
@@ -16,7 +14,6 @@ import { User } from './modules/user/user.model';
     UserModule,
     AuthModule,
     DatabaseModule,
-    TypeOrmModule.forFeature([User]),
   ],
   providers: [
     {
