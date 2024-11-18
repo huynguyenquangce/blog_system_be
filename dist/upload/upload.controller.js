@@ -22,13 +22,13 @@ let UploadController = class UploadController {
     constructor(uploadService) {
         this.uploadService = uploadService;
     }
-    async uploadFile(file) {
+    async uploadFile(file, id) {
         try {
             const resizebuffer = await sharp(file.buffer)
                 .resize({ height: 1920, width: 1080, fit: 'contain' })
                 .toBuffer();
             file.originalname = (0, uuid_1.v4)();
-            const response = await this.uploadService.upload(file.originalname, resizebuffer, file.mimetype);
+            const response = await this.uploadService.upload(file.originalname, resizebuffer, file.mimetype, id);
             return response;
         }
         catch (error) {
@@ -38,13 +38,14 @@ let UploadController = class UploadController {
 };
 exports.UploadController = UploadController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)(':id'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
         validators: [],
     }))),
+    __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "uploadFile", null);
 exports.UploadController = UploadController = __decorate([

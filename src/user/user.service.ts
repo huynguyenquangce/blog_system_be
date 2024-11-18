@@ -72,14 +72,13 @@ export class UserService {
       //   throw new NotFoundException(`User with id ${id} not found`);
       // }
       const response = this.userRepository.update(id, updateActive);
-      console.log(response);
       throw new HttpException(`Successfully delete user ${id}`, HttpStatus.OK);
     } catch (error) {
       throw error;
     }
   }
 
-  async finduserbyid(id: number): Promise<UserDto> {
+  async finduserbyid(id: number): Promise<UserSignInDto> {
     try {
       const response = this.userRepository.findOne({
         where: {
@@ -89,7 +88,7 @@ export class UserService {
       if (response) {
         return response.then((result) => {
           if (result) {
-            return plainToInstance(UserDto, result, {
+            return plainToInstance(UserSignInDto, result, {
               excludeExtraneousValues: true,
             });
           }

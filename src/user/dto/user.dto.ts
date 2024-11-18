@@ -31,6 +31,9 @@ export class UserDto extends BaseCommon {
 }
 
 export class UserSignInDto {
+  @Expose()
+  id: string;
+
   @IsNotEmpty()
   @IsEmail()
   @Expose()
@@ -59,9 +62,9 @@ export class UserUpdate {
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
-  @MinLength(6)
-  password: string;
+  // @IsNotEmpty()
+  // @MinLength(6)
+  // password: string;
 
   @IsNotEmpty()
   @IsString()

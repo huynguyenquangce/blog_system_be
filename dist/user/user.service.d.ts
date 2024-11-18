@@ -7,6 +7,6 @@ export declare class UserService {
     signup(user: UserDto): Promise<UserDto>;
     signin(user: UserSignInDto): Promise<UserSignInDto>;
     deleteuser(id: number): Promise<void>;
-    finduserbyid(id: number): Promise<UserDto>;
+    finduserbyid(id: number): Promise<UserSignInDto>;
     updateuserbyid(id: number, updateUserInformation: UserUpdate): Promise<UserUpdate>;
 }

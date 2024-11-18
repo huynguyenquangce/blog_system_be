@@ -73,7 +73,6 @@ let UserService = class UserService {
             }
             updateActive.isActive = false;
             const response = this.userRepository.update(id, updateActive);
-            console.log(response);
             throw new common_1.HttpException(`Successfully delete user ${id}`, common_1.HttpStatus.OK);
         }
         catch (error) {
@@ -90,7 +89,7 @@ let UserService = class UserService {
             if (response) {
                 return response.then((result) => {
                     if (result) {
-                        return (0, class_transformer_1.plainToInstance)(user_dto_1.UserDto, result, {
+                        return (0, class_transformer_1.plainToInstance)(user_dto_1.UserSignInDto, result, {
                             excludeExtraneousValues: true,
                         });
                     }

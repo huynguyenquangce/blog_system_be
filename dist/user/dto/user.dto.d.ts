@@ -9,6 +9,7 @@ export declare class UserDto extends BaseCommon {
     imageURL: string;
 }
 export declare class UserSignInDto {
+    id: string;
     email: string;
     password: string;
     fullName: string;
@@ -18,7 +19,6 @@ export declare class UserSignInDto {
 }
 export declare class UserUpdate {
     email: string;
-    password: string;
     lastName: string;
     firstName: string;
 }

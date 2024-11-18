@@ -6,6 +6,9 @@ import {
 } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { Repository } from 'typeorm';
+import { UserEntity } from 'src/user/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class UploadService {
   private readonly s3Client = new S3Client({
@@ -15,8 +18,12 @@ export class UploadService {
       secretAccessKey: this.configService.getOrThrow('AWS_SECRET_ACCESS_KEY'),
     },
   });
-  constructor(private readonly configService: ConfigService) {}
-  async upload(fileName: string, file: Buffer, minetype: string) {
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
+  async upload(fileName: string, file: Buffer, minetype: string, id: number) {
     try {
       const upload = await this.s3Client.send(
         new PutObjectCommand({
@@ -28,18 +35,20 @@ export class UploadService {
         }),
       );
       if (upload.$metadata.httpStatusCode === 200) {
-        // const command = await new GetObjectCommand({
-        //   Bucket: this.configService.getOrThrow('S3_BUCKET_NAME'),
-        //   Key: fileName,
-        // });
-        // const imageURl = await getSignedUrl(this.s3Client, command, {
-        //   // expiresIn: 604800,
-        //   expiresIn: 800000,
-        // });
         const returnParams = {
           imageName: fileName,
           imageURL: `https://${this.configService.getOrThrow('S3_BUCKET_NAME')}.s3.${this.configService.getOrThrow('AWS_REGION')}.amazonaws.com/${fileName}`,
         };
+        // modify image url in users
+        const userImage = await this.userRepository.findOneBy({ id: id });
+        userImage.imageURL = returnParams.imageURL;
+        const response = this.userRepository.update(id, userImage);
+        if (response) {
+          throw new HttpException(
+            `Successfully update image with ${id}`,
+            HttpStatus.OK,
+          );
+        }
         return returnParams;
       }
       throw new HttpException('Failed to upload image', HttpStatus.BAD_REQUEST);

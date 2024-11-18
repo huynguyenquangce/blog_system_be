@@ -1,6 +1,7 @@
 import {
   Controller,
   MaxFileSizeValidator,
+  Param,
   ParseFilePipe,
   Post,
   UploadedFile,
@@ -15,7 +16,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @Post()
+  @Post(':id')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile(
@@ -27,6 +28,7 @@ export class UploadController {
       }),
     )
     file: Express.Multer.File,
+    @Param('id') id: number,
   ) {
     try {
       // Resize Image
@@ -41,7 +43,9 @@ export class UploadController {
         file.originalname,
         resizebuffer,
         file.mimetype,
+        id,
       );
+
       return response;
     } catch (error) {
       throw error;
