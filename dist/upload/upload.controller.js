@@ -45,7 +45,7 @@ __decorate([
     }))),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], UploadController.prototype, "uploadFile", null);
 exports.UploadController = UploadController = __decorate([

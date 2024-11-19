@@ -6,7 +6,7 @@ export declare class UploadService {
     private readonly userRepository;
     private readonly s3Client;
     constructor(configService: ConfigService, userRepository: Repository<UserEntity>);
-    upload(fileName: string, file: Buffer, minetype: string, id: number): Promise<{
+    upload(fileName: string, file: Buffer, minetype: string, id: string): Promise<{
         imageName: string;
         imageURL: string;
     }>;

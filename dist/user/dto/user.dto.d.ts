@@ -8,7 +8,11 @@ export declare class UserDto extends BaseCommon {
     accountType: string;
     imageURL: string;
 }
-export declare class UserSignInDto {
+export declare class UserSignIn {
+    email: string;
+    password: string;
+}
+export declare class SignInResponse {
     id: string;
     email: string;
     password: string;
@@ -19,6 +23,15 @@ export declare class UserSignInDto {
 }
 export declare class UserUpdate {
     email: string;
+    password: string;
     lastName: string;
     firstName: string;
+}
+export declare class SignUpResponse {
+    statusCode: number;
+    message: string;
+}
+export declare class DeleteUserResponse extends SignUpResponse {
+}
+export declare class UpdateUserResponse extends SignUpResponse {
 }

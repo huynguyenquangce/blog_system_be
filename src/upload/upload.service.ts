@@ -23,7 +23,7 @@ export class UploadService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
-  async upload(fileName: string, file: Buffer, minetype: string, id: number) {
+  async upload(fileName: string, file: Buffer, minetype: string, id: string) {
     try {
       const upload = await this.s3Client.send(
         new PutObjectCommand({

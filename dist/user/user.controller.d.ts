@@ -1,12 +1,12 @@
-import { UserDto, UserUpdate } from './dto/user.dto';
-import { UserSignInDto } from './dto/user.dto';
+import { SignUpResponse, UpdateUserResponse, UserDto, UserSignIn, UserUpdate } from './dto/user.dto';
+import { SignInResponse } from './dto/user.dto';
 import { UserService } from './user.service';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    signup(user: UserDto): Promise<UserDto>;
-    signin(user: UserSignInDto): Promise<UserSignInDto>;
-    deleteuser(id: number): Promise<void>;
-    finduserbyid(id: number): Promise<UserSignInDto>;
-    updateuserbyid(id: number, updateUserInformation: UserUpdate): Promise<UserUpdate>;
+    signup(user: UserDto): Promise<SignUpResponse>;
+    signin(user: UserSignIn): Promise<SignInResponse>;
+    deleteuser(id: string): Promise<import("./dto/user.dto").DeleteUserResponse>;
+    finduserbyid(id: string): Promise<SignInResponse>;
+    updateuserbyid(id: string, updateUserInformation: UserUpdate): Promise<UpdateUserResponse>;
 }

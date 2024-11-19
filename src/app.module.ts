@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user/user.entity';
 import { UploadModule } from './upload/upload.module';
+import { BlogModule } from './blog/blog.module';
+import { BlogEntity } from './blog/blog.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,10 +21,11 @@ import { UploadModule } from './upload/upload.module';
       username: 'huy',
       password: 'root',
       database: 'blog_system',
-      entities: [UserEntity],
+      entities: [UserEntity, BlogEntity],
       synchronize: true,
     }),
     UploadModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

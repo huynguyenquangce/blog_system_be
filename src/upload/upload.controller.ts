@@ -28,7 +28,7 @@ export class UploadController {
       }),
     )
     file: Express.Multer.File,
-    @Param('id') id: number,
+    @Param('id') id: string,
   ) {
     try {
       // Resize Image

@@ -9,86 +9,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserEntity = void 0;
+exports.BlogEntity = void 0;
 const typeorm_1 = require("typeorm");
-let UserEntity = class UserEntity {
+let BlogEntity = class BlogEntity {
 };
-exports.UserEntity = UserEntity;
+exports.BlogEntity = BlogEntity;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
     __metadata("design:type", String)
-], UserEntity.prototype, "id", void 0);
+], BlogEntity.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: false,
+        type: 'longtext',
     }),
     __metadata("design:type", String)
-], UserEntity.prototype, "firstName", void 0);
+], BlogEntity.prototype, "author", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: false,
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "lastName", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        nullable: false,
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "email", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        nullable: false,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        }),
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "updatedAt", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        nullable: false,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        }),
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "createAt", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
+        type: 'varchar',
         length: 255,
+    }),
+    __metadata("design:type", String)
+], BlogEntity.prototype, "title", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
         nullable: false,
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+        }),
     }),
     __metadata("design:type", String)
-], UserEntity.prototype, "password", void 0);
+], BlogEntity.prototype, "createAt", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        length: 50,
-        default: 'Normal',
+        nullable: false,
+        default: new Date().toLocaleString('en-US', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+        }),
     }),
     __metadata("design:type", String)
-], UserEntity.prototype, "accountType", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        default: true,
-    }),
-    __metadata("design:type", Boolean)
-], UserEntity.prototype, "isActive", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        default: null,
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "deleteAt", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        type: 'text',
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "imageURL", void 0);
-exports.UserEntity = UserEntity = __decorate([
+], BlogEntity.prototype, "updatedAt", void 0);
+exports.BlogEntity = BlogEntity = __decorate([
     (0, typeorm_1.Entity)({
-        name: 'users',
+        name: 'blogs',
     })
-], UserEntity);
-//# sourceMappingURL=user.entity.js.map
+], BlogEntity);
+//# sourceMappingURL=blog.entity.js.map

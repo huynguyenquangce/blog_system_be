@@ -6,12 +6,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePasswordService = void 0;
+exports.BlogModule = void 0;
 const common_1 = require("@nestjs/common");
-let updatePasswordService = class updatePasswordService {
+const blog_controller_1 = require("./blog.controller");
+const blog_service_1 = require("./blog.service");
+const typeorm_1 = require("@nestjs/typeorm");
+const blog_entity_1 = require("./blog.entity");
+let BlogModule = class BlogModule {
 };
-exports.updatePasswordService = updatePasswordService;
-exports.updatePasswordService = updatePasswordService = __decorate([
-    (0, common_1.Injectable)()
-], updatePasswordService);
-//# sourceMappingURL=updatePassword.service.js.map
+exports.BlogModule = BlogModule;
+exports.BlogModule = BlogModule = __decorate([
+    (0, common_1.Module)({
+        controllers: [blog_controller_1.BlogController],
+        providers: [blog_service_1.BlogService],
+        exports: [blog_service_1.BlogService],
+        imports: [typeorm_1.TypeOrmModule.forFeature([blog_entity_1.BlogEntity])],
+    })
+], BlogModule);
+//# sourceMappingURL=blog.module.js.map

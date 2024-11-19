@@ -4,12 +4,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UserDto, UserSignInDto, UserUpdate } from './dto/user.dto';
+import {
+  UserDto,
+  SignInResponse,
+  UserUpdate,
+  SignUpResponse,
+  UserSignIn,
+  DeleteUserResponse,
+  UpdateUserResponse,
+} from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import * as bcrypt from 'bcrypt';
+import { hashPassword, comparePass } from 'src/ultils/helper';
 @Injectable()
 export class UserService {
   constructor(
@@ -17,12 +25,9 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async signup(user: UserDto): Promise<UserDto> {
-    const saltRound = 10;
+  async signup(user: UserDto): Promise<SignUpResponse> {
     try {
-      const salt = await bcrypt.genSalt(saltRound);
-      const hash = await bcrypt.hash(user.password, salt);
-      user.password = hash.toString();
+      user.password = await hashPassword(user.password);
       const existingUser = await this.userRepository.findOneBy({
         email: user.email,
       });
@@ -30,27 +35,30 @@ export class UserService {
         throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
       }
       const saveUser = await this.userRepository.insert(user);
-      return plainToInstance(UserDto, saveUser, {
-        excludeExtraneousValues: true,
-      });
+      if (saveUser) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'User Sign Up Successfully',
+        };
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  async signin(user: UserSignInDto): Promise<UserSignInDto> {
+  async signin(user: UserSignIn): Promise<SignInResponse> {
     try {
       const userValid = await this.userRepository.findOne({
-        where: { email: user.email },
+        where: { email: user.email, isActive: true },
       });
       if (!userValid) {
-        throw new NotFoundException('Email not found');
+        throw new NotFoundException('Email not found or being delete before');
       }
 
-      const isMatch = await bcrypt.compare(user.password, userValid.password);
+      const isMatch = await comparePass(user.password, userValid.password);
 
       if (isMatch) {
-        return plainToInstance(UserSignInDto, userValid, {
+        return plainToInstance(SignInResponse, userValid, {
           excludeExtraneousValues: true,
         });
       }
@@ -60,7 +68,7 @@ export class UserService {
     }
   }
 
-  async deleteuser(id: number) {
+  async deleteuser(id: string): Promise<DeleteUserResponse> {
     try {
       const updateActive = await this.userRepository.findOneBy({ id: id });
       if (!updateActive) {
@@ -72,13 +80,18 @@ export class UserService {
       //   throw new NotFoundException(`User with id ${id} not found`);
       // }
       const response = this.userRepository.update(id, updateActive);
-      throw new HttpException(`Successfully delete user ${id}`, HttpStatus.OK);
+      if (response) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: `Delete user by id ${id} successfully`,
+        };
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  async finduserbyid(id: number): Promise<UserSignInDto> {
+  async finduserbyid(id: string): Promise<SignInResponse> {
     try {
       const response = this.userRepository.findOne({
         where: {
@@ -88,7 +101,7 @@ export class UserService {
       if (response) {
         return response.then((result) => {
           if (result) {
-            return plainToInstance(UserSignInDto, result, {
+            return plainToInstance(SignInResponse, result, {
               excludeExtraneousValues: true,
             });
           }
@@ -105,22 +118,34 @@ export class UserService {
   }
 
   async updateuserbyid(
-    id: number,
+    id: string,
     updateUserInformation: UserUpdate,
-  ): Promise<UserUpdate> {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new HttpException(
-        `Cannot find user with id: ${id} `,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    const updatedUser = { ...user, ...updateUserInformation };
-    // Update User
-    updatedUser.updatedAt = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Ho_Chi_Minh',
-    });
-    const response = await this.userRepository.update(id, updatedUser);
-    return updatedUser;
+  ): Promise<UpdateUserResponse> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new HttpException(
+          `Cannot find user with id: ${id} `,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (updateUserInformation.password) {
+        updateUserInformation.password = await hashPassword(
+          updateUserInformation.password,
+        );
+      }
+      const updatedUser = { ...user, ...updateUserInformation };
+      // Update User
+      updatedUser.updatedAt = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+      });
+      const response = await this.userRepository.update(id, updatedUser);
+      if (response) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: `Update user by id ${id} successfully `,
+        };
+      }
+    } catch (error) {}
   }
 }

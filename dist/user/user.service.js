@@ -37,9 +37,12 @@ let UserService = class UserService {
                 throw new common_1.HttpException('Email is already in use', common_1.HttpStatus.CONFLICT);
             }
             const saveUser = await this.userRepository.insert(user);
-            return (0, class_transformer_1.plainToInstance)(user_dto_1.UserDto, saveUser, {
-                excludeExtraneousValues: true,
-            });
+            if (saveUser) {
+                return {
+                    statusCode: common_1.HttpStatus.OK,
+                    message: 'User Sign Up Successfully',
+                };
+            }
         }
         catch (error) {
             throw error;
@@ -48,14 +51,14 @@ let UserService = class UserService {
     async signin(user) {
         try {
             const userValid = await this.userRepository.findOne({
-                where: { email: user.email },
+                where: { email: user.email, isActive: true },
             });
             if (!userValid) {
-                throw new common_1.NotFoundException('Email not found');
+                throw new common_1.NotFoundException('Email not found or being delete before');
             }
             const isMatch = await bcrypt.compare(user.password, userValid.password);
             if (isMatch) {
-                return (0, class_transformer_1.plainToInstance)(user_dto_1.UserSignInDto, userValid, {
+                return (0, class_transformer_1.plainToInstance)(user_dto_1.SignInResponse, userValid, {
                     excludeExtraneousValues: true,
                 });
             }
@@ -73,7 +76,12 @@ let UserService = class UserService {
             }
             updateActive.isActive = false;
             const response = this.userRepository.update(id, updateActive);
-            throw new common_1.HttpException(`Successfully delete user ${id}`, common_1.HttpStatus.OK);
+            if (response) {
+                return {
+                    statusCode: common_1.HttpStatus.OK,
+                    message: `Delete user by id ${id} successfully`,
+                };
+            }
         }
         catch (error) {
             throw error;
@@ -89,7 +97,7 @@ let UserService = class UserService {
             if (response) {
                 return response.then((result) => {
                     if (result) {
-                        return (0, class_transformer_1.plainToInstance)(user_dto_1.UserSignInDto, result, {
+                        return (0, class_transformer_1.plainToInstance)(user_dto_1.SignInResponse, result, {
                             excludeExtraneousValues: true,
                         });
                     }
@@ -103,16 +111,30 @@ let UserService = class UserService {
         }
     }
     async updateuserbyid(id, updateUserInformation) {
-        const user = await this.userRepository.findOneBy({ id });
-        if (!user) {
-            throw new common_1.HttpException(`Cannot find user with id: ${id} `, common_1.HttpStatus.NOT_FOUND);
+        const saltRound = 10;
+        try {
+            const user = await this.userRepository.findOneBy({ id });
+            if (!user) {
+                throw new common_1.HttpException(`Cannot find user with id: ${id} `, common_1.HttpStatus.NOT_FOUND);
+            }
+            if (updateUserInformation.password) {
+                const salt = await bcrypt.genSalt(saltRound);
+                const newPassword = await bcrypt.hash(updateUserInformation.password, salt);
+                updateUserInformation.password = await newPassword.toString();
+            }
+            const updatedUser = { ...user, ...updateUserInformation };
+            updatedUser.updatedAt = new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Ho_Chi_Minh',
+            });
+            const response = await this.userRepository.update(id, updatedUser);
+            if (response) {
+                return {
+                    statusCode: common_1.HttpStatus.OK,
+                    message: `Update user by id ${id} successfully `,
+                };
+            }
         }
-        const updatedUser = { ...user, ...updateUserInformation };
-        updatedUser.updatedAt = new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        });
-        const response = await this.userRepository.update(id, updatedUser);
-        return updatedUser;
+        catch (error) { }
     }
 };
 exports.UserService = UserService;

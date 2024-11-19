@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_dto_1 = require("./dto/user.dto");
-const user_dto_2 = require("./dto/user.dto");
 const user_service_1 = require("./user.service");
 let UserController = class UserController {
     constructor(userService) {
@@ -78,30 +77,29 @@ __decorate([
     (0, common_1.Post)('signin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_2.UserSignInDto]),
+    __metadata("design:paramtypes", [user_dto_1.UserSignIn]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "signin", null);
 __decorate([
     (0, common_1.Delete)('delete/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteuser", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "finduserbyid", null);
 __decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
     (0, common_1.Put)('update/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, user_dto_1.UserUpdate]),
+    __metadata("design:paramtypes", [String, user_dto_1.UserUpdate]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateuserbyid", null);
 exports.UserController = UserController = __decorate([

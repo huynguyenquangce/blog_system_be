@@ -4,8 +4,8 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
   name: 'users',
 })
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     nullable: false,
@@ -64,4 +64,9 @@ export class UserEntity {
     type: 'text',
   })
   imageURL: string;
+
+  @Column({
+    default: 'user',
+  })
+  role: string;
 }

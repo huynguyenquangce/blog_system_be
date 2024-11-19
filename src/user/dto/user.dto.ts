@@ -30,7 +30,15 @@ export class UserDto extends BaseCommon {
   imageURL: string;
 }
 
-export class UserSignInDto {
+export class UserSignIn {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  password: string;
+}
+export class SignInResponse {
   @Expose()
   id: string;
 
@@ -62,9 +70,8 @@ export class UserUpdate {
   @IsEmail()
   email: string;
 
-  // @IsNotEmpty()
-  // @MinLength(6)
-  // password: string;
+  @MinLength(6)
+  password: string;
 
   @IsNotEmpty()
   @IsString()
@@ -74,3 +81,11 @@ export class UserUpdate {
   @IsString()
   firstName: string;
 }
+
+export class SignUpResponse {
+  statusCode: number;
+  message: string;
+}
+
+export class DeleteUserResponse extends SignUpResponse {}
+export class UpdateUserResponse extends SignUpResponse {}
