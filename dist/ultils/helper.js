@@ -20,7 +20,9 @@ const comparePass = async (plainPassword, ValidPass) => {
         const isMatch = bcrypt.compare(plainPassword, ValidPass);
         return isMatch;
     }
-    catch (error) { }
+    catch (error) {
+        console.log(error);
+    }
 };
 exports.comparePass = comparePass;
 function paginateResponse(data, page, limit) {

@@ -22,11 +22,13 @@ import {
 } from './dto/user.dto';
 import { SignInResponse } from './dto/user.dto';
 import { UserService } from './user.service';
+import { Public } from 'src/decorator/publicRoute';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @UsePipes(new ValidationPipe())
+  @Public()
   @Post('signup')
   async signup(@Body() user: UserDto): Promise<SignUpResponse> {
     try {

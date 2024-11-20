@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 export declare class UserService {
     private readonly userRepository;
     constructor(userRepository: Repository<UserEntity>);
-    emailExist: (email: string) => Promise<UserEntity>;
+    emailExist(email: string): Promise<UserEntity>;
     emailNotExist: (email: string) => Promise<boolean>;
     signup(user: UserDto): Promise<{
         id: any;

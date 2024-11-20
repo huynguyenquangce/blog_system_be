@@ -25,15 +25,13 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  emailExist = async (email: string): Promise<UserEntity> => {
-    const existEmail = await this.userRepository.findOneBy({
-      email: email,
-    });
-    if (!existEmail) {
-      throw new NotFoundException('Email not exist');
+  async emailExist(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException('Email not found');
     }
-    return existEmail;
-  };
+    return user;
+  }
 
   emailNotExist = async (email: string): Promise<boolean> => {
     const existEmail = await this.userRepository.findOneBy({

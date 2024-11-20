@@ -15,7 +15,9 @@ export const comparePass = async (plainPassword: string, ValidPass: string) => {
   try {
     const isMatch = bcrypt.compare(plainPassword, ValidPass);
     return isMatch;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export function paginateResponse(data, page, limit) {

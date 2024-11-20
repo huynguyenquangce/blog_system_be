@@ -19,24 +19,23 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    async signin(user) {
+    async validateUser(user) {
         try {
             const user_exist = await this.userService.emailExist(user.email);
             const isMatch = await (0, helper_1.comparePass)(user.password, user_exist.password);
-            if (!isMatch) {
-                return {
-                    statusCode: common_1.HttpStatus.UNAUTHORIZED,
-                    message: 'Password incorrect',
-                };
-            }
-            const payload = { sub: user_exist.id, username: user.email };
-            return {
-                access_token: await this.jwtService.signAsync(payload),
-            };
+            if (isMatch)
+                return user_exist;
+            throw new common_1.UnauthorizedException('Invalid credentials');
         }
         catch (error) {
             throw new common_1.HttpException('Error from server', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    async signin(user) {
+        const payload = { username: user.email, sub: user.id };
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        };
     }
 };
 exports.AuthService = AuthService;

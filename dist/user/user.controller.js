@@ -16,6 +16,7 @@ exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_dto_1 = require("./dto/user.dto");
 const user_service_1 = require("./user.service");
+const publicRoute_1 = require("../decorator/publicRoute");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -64,6 +65,7 @@ let UserController = class UserController {
 exports.UserController = UserController;
 __decorate([
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, publicRoute_1.Public)(),
     (0, common_1.Post)('signup'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

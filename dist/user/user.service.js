@@ -23,15 +23,6 @@ const helper_1 = require("../ultils/helper");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
-        this.emailExist = async (email) => {
-            const existEmail = await this.userRepository.findOneBy({
-                email: email,
-            });
-            if (!existEmail) {
-                throw new common_1.NotFoundException('Email not exist');
-            }
-            return existEmail;
-        };
         this.emailNotExist = async (email) => {
             const existEmail = await this.userRepository.findOneBy({
                 email: email,
@@ -41,6 +32,13 @@ let UserService = class UserService {
             }
             return true;
         };
+    }
+    async emailExist(email) {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new common_1.NotFoundException('Email not found');
+        }
+        return user;
     }
     async signup(user) {
         try {
