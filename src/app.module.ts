@@ -8,6 +8,7 @@ import { UserEntity } from './user/user.entity';
 import { UploadModule } from './upload/upload.module';
 import { BlogModule } from './blog/blog.module';
 import { BlogEntity } from './blog/blog.entity';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,6 +27,7 @@ import { BlogEntity } from './blog/blog.entity';
     }),
     UploadModule,
     BlogModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -106,12 +106,10 @@ __decorate([
     __metadata("design:type", String)
 ], UserUpdate.prototype, "password", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UserUpdate.prototype, "lastName", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UserUpdate.prototype, "firstName", void 0);

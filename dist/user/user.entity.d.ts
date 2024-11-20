@@ -10,4 +10,5 @@ export declare class UserEntity {
     isActive: boolean;
     deleteAt: string;
     imageURL: string;
+    role: string;
 }

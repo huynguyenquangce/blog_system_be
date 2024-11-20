@@ -17,6 +17,7 @@ const user_entity_1 = require("./user/user.entity");
 const upload_module_1 = require("./upload/upload.module");
 const blog_module_1 = require("./blog/blog.module");
 const blog_entity_1 = require("./blog/blog.entity");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
             }),
             upload_module_1.UploadModule,
             blog_module_1.BlogModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

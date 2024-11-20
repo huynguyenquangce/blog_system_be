@@ -19,50 +19,44 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./user.entity");
 const typeorm_2 = require("typeorm");
 const class_transformer_1 = require("class-transformer");
-const bcrypt = require("bcrypt");
+const helper_1 = require("../ultils/helper");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
+        this.emailExist = async (email) => {
+            const existEmail = await this.userRepository.findOneBy({
+                email: email,
+            });
+            if (!existEmail) {
+                throw new common_1.NotFoundException('Email not exist');
+            }
+            return existEmail;
+        };
+        this.emailNotExist = async (email) => {
+            const existEmail = await this.userRepository.findOneBy({
+                email: email,
+            });
+            if (!existEmail) {
+                return false;
+            }
+            return true;
+        };
     }
     async signup(user) {
-        const saltRound = 10;
         try {
-            const salt = await bcrypt.genSalt(saltRound);
-            const hash = await bcrypt.hash(user.password, salt);
-            user.password = hash.toString();
-            const existingUser = await this.userRepository.findOneBy({
-                email: user.email,
-            });
-            if (existingUser) {
-                throw new common_1.HttpException('Email is already in use', common_1.HttpStatus.CONFLICT);
+            user.password = await (0, helper_1.hashPassword)(user.password);
+            const existEmail = await this.emailNotExist(user.email);
+            if (existEmail) {
+                throw new common_1.HttpException(`Email ${user.email} is already in use`, common_1.HttpStatus.CONFLICT);
             }
             const saveUser = await this.userRepository.insert(user);
             if (saveUser) {
                 return {
+                    id: saveUser.identifiers[0].id,
                     statusCode: common_1.HttpStatus.OK,
                     message: 'User Sign Up Successfully',
                 };
             }
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    async signin(user) {
-        try {
-            const userValid = await this.userRepository.findOne({
-                where: { email: user.email, isActive: true },
-            });
-            if (!userValid) {
-                throw new common_1.NotFoundException('Email not found or being delete before');
-            }
-            const isMatch = await bcrypt.compare(user.password, userValid.password);
-            if (isMatch) {
-                return (0, class_transformer_1.plainToInstance)(user_dto_1.SignInResponse, userValid, {
-                    excludeExtraneousValues: true,
-                });
-            }
-            throw new common_1.HttpException('Password Wrong', common_1.HttpStatus.UNAUTHORIZED);
         }
         catch (error) {
             throw error;
@@ -111,16 +105,13 @@ let UserService = class UserService {
         }
     }
     async updateuserbyid(id, updateUserInformation) {
-        const saltRound = 10;
         try {
             const user = await this.userRepository.findOneBy({ id });
             if (!user) {
                 throw new common_1.HttpException(`Cannot find user with id: ${id} `, common_1.HttpStatus.NOT_FOUND);
             }
             if (updateUserInformation.password) {
-                const salt = await bcrypt.genSalt(saltRound);
-                const newPassword = await bcrypt.hash(updateUserInformation.password, salt);
-                updateUserInformation.password = await newPassword.toString();
+                updateUserInformation.password = await (0, helper_1.hashPassword)(updateUserInformation.password);
             }
             const updatedUser = { ...user, ...updateUserInformation };
             updatedUser.updatedAt = new Date().toLocaleString('en-US', {
@@ -135,6 +126,17 @@ let UserService = class UserService {
             }
         }
         catch (error) { }
+    }
+    async findAll(query, take, page) {
+        const take_param = take || 5;
+        const page_param = page || 1;
+        const skip = (page_param - 1) * take_param;
+        const data = await this.userRepository.findAndCount({
+            take: take,
+            skip: skip,
+            select: ['id', 'email', 'firstName', 'lastName', 'role', 'imageURL'],
+        });
+        return (0, helper_1.paginateResponse)(data, page_param, take_param);
     }
 };
 exports.UserService = UserService;

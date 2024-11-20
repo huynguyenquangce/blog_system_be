@@ -30,14 +30,6 @@ let UserController = class UserController {
             throw error;
         }
     }
-    async signin(user) {
-        try {
-            return await this.userService.signin(user);
-        }
-        catch (error) {
-            throw error;
-        }
-    }
     async deleteuser(id) {
         try {
             return this.userService.deleteuser(id);
@@ -62,6 +54,12 @@ let UserController = class UserController {
             throw error;
         }
     }
+    async findAll(query, take, page) {
+        try {
+            return this.userService.findAll(query, take, page);
+        }
+        catch (error) { }
+    }
 };
 exports.UserController = UserController;
 __decorate([
@@ -72,14 +70,6 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.UserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "signup", null);
-__decorate([
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    (0, common_1.Post)('signin'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.UserSignIn]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "signin", null);
 __decorate([
     (0, common_1.Delete)('delete/:id'),
     __param(0, (0, common_1.Param)('id')),
@@ -102,6 +92,15 @@ __decorate([
     __metadata("design:paramtypes", [String, user_dto_1.UserUpdate]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateuserbyid", null);
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
+    __param(1, (0, common_1.Query)('take')),
+    __param(2, (0, common_1.Query)('page')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "findAll", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])

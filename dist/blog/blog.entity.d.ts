@@ -1,7 +1,8 @@
 export declare class BlogEntity {
     id: string;
-    author: string;
+    authorID: string;
     title: string;
     createAt: string;
     updatedAt: string;
+    imageURL: string;
 }

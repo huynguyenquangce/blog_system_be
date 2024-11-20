@@ -24,7 +24,7 @@ __decorate([
         type: 'longtext',
     }),
     __metadata("design:type", String)
-], BlogEntity.prototype, "author", void 0);
+], BlogEntity.prototype, "authorID", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: false,
@@ -51,6 +51,12 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], BlogEntity.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], BlogEntity.prototype, "imageURL", void 0);
 exports.BlogEntity = BlogEntity = __decorate([
     (0, typeorm_1.Entity)({
         name: 'blogs',

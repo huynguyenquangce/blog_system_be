@@ -73,16 +73,15 @@ export class UserUpdate {
   @MinLength(6)
   password: string;
 
-  @IsNotEmpty()
   @IsString()
   lastName: string;
 
-  @IsNotEmpty()
   @IsString()
   firstName: string;
 }
 
 export class SignUpResponse {
+  // id: string;
   statusCode: number;
   message: string;
 }

@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -38,15 +39,15 @@ export class UserController {
     }
   }
 
-  @UsePipes(new ValidationPipe())
-  @Post('signin')
-  async signin(@Body() user: UserSignIn): Promise<SignInResponse> {
-    try {
-      return await this.userService.signin(user);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @UsePipes(new ValidationPipe())
+  // @Post('signin')
+  // async signin(@Body() user: UserSignIn): Promise<SignInResponse> {
+  //   try {
+  //     return await this.userService.signin(user);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   @Delete('delete/:id')
   async deleteuser(@Param('id') id: string) {
@@ -77,5 +78,16 @@ export class UserController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @Get()
+  async findAll(
+    @Query() query: string,
+    @Query('take') take: number,
+    @Query('page') page: number,
+  ) {
+    try {
+      return this.userService.findAll(query, take, page);
+    } catch (error) {}
   }
 }

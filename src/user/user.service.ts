@@ -17,7 +17,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import { hashPassword, comparePass } from 'src/ultils/helper';
+import { hashPassword, comparePass, paginateResponse } from 'src/ultils/helper';
 @Injectable()
 export class UserService {
   constructor(
@@ -25,18 +25,39 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async signup(user: UserDto): Promise<SignUpResponse> {
+  emailExist = async (email: string): Promise<UserEntity> => {
+    const existEmail = await this.userRepository.findOneBy({
+      email: email,
+    });
+    if (!existEmail) {
+      throw new NotFoundException('Email not exist');
+    }
+    return existEmail;
+  };
+
+  emailNotExist = async (email: string): Promise<boolean> => {
+    const existEmail = await this.userRepository.findOneBy({
+      email: email,
+    });
+    if (!existEmail) {
+      return false;
+    }
+    return true;
+  };
+  async signup(user: UserDto) {
     try {
       user.password = await hashPassword(user.password);
-      const existingUser = await this.userRepository.findOneBy({
-        email: user.email,
-      });
-      if (existingUser) {
-        throw new HttpException('Email is already in use', HttpStatus.CONFLICT);
+      const existEmail = await this.emailNotExist(user.email);
+      if (existEmail) {
+        throw new HttpException(
+          `Email ${user.email} is already in use`,
+          HttpStatus.CONFLICT,
+        );
       }
       const saveUser = await this.userRepository.insert(user);
       if (saveUser) {
         return {
+          id: saveUser.identifiers[0].id,
           statusCode: HttpStatus.OK,
           message: 'User Sign Up Successfully',
         };
@@ -46,27 +67,27 @@ export class UserService {
     }
   }
 
-  async signin(user: UserSignIn): Promise<SignInResponse> {
-    try {
-      const userValid = await this.userRepository.findOne({
-        where: { email: user.email, isActive: true },
-      });
-      if (!userValid) {
-        throw new NotFoundException('Email not found or being delete before');
-      }
+  // async signin(user: UserSignIn): Promise<SignInResponse> {
+  //   try {
+  //     const userValid = await this.userRepository.findOne({
+  //       where: { email: user.email, isActive: true },
+  //     });
+  //     if (!userValid) {
+  //       throw new NotFoundException('Email not found or being delete before');
+  //     }
 
-      const isMatch = await comparePass(user.password, userValid.password);
+  //     const isMatch = await comparePass(user.password, userValid.password);
 
-      if (isMatch) {
-        return plainToInstance(SignInResponse, userValid, {
-          excludeExtraneousValues: true,
-        });
-      }
-      throw new HttpException('Password Wrong', HttpStatus.UNAUTHORIZED);
-    } catch (error) {
-      throw error;
-    }
-  }
+  //     if (isMatch) {
+  //       return plainToInstance(SignInResponse, userValid, {
+  //         excludeExtraneousValues: true,
+  //       });
+  //     }
+  //     throw new HttpException('Password Wrong', HttpStatus.UNAUTHORIZED);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   async deleteuser(id: string): Promise<DeleteUserResponse> {
     try {
@@ -147,5 +168,18 @@ export class UserService {
         };
       }
     } catch (error) {}
+  }
+
+  async findAll(query: string, take: number, page: number) {
+    const take_param = take || 5;
+    const page_param = page || 1;
+    const skip = (page_param - 1) * take_param;
+    const data = await this.userRepository.findAndCount({
+      take: take,
+      skip: skip,
+      select: ['id', 'email', 'firstName', 'lastName', 'role', 'imageURL'],
+    });
+
+    return paginateResponse(data, page_param, take_param);
   }
 }
