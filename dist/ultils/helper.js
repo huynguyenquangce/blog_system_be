@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comparePass = exports.hashPassword = void 0;
+exports.compareTime = exports.activationTime = exports.currentTime = exports.comparePass = exports.hashPassword = void 0;
 exports.paginateResponse = paginateResponse;
 const bcrypt = require("bcrypt");
+const dayjs = require("dayjs");
 const saltRounds = 10;
 const hashPassword = async (plainPassword) => {
     try {
@@ -41,4 +42,25 @@ function paginateResponse(data, page, limit) {
         totalPage: lastPage,
     };
 }
+const currentTime = () => {
+    const vietnamTime = dayjs();
+    return vietnamTime.format('YYYY-MM-DD HH:mm:ss');
+};
+exports.currentTime = currentTime;
+const activationTime = () => {
+    const vietnamTime = dayjs();
+    const extraTime = vietnamTime.add(5, 'minute');
+    return extraTime.format('YYYY-MM-DD HH:mm:ss');
+};
+exports.activationTime = activationTime;
+const compareTime = (activation_Time) => {
+    const current = dayjs();
+    const activateTime = dayjs(activation_Time);
+    if (current.isAfter(activateTime))
+        return false;
+    else {
+        return true;
+    }
+};
+exports.compareTime = compareTime;
 //# sourceMappingURL=helper.js.map

@@ -39,18 +39,14 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         nullable: false,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        }),
+        type: 'datetime',
     }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "updatedAt", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: false,
-        default: new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh',
-        }),
+        type: 'datetime',
     }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "createAt", void 0);
@@ -63,23 +59,17 @@ __decorate([
 ], UserEntity.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        length: 50,
         default: 'Normal',
     }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "accountType", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        default: true,
+        default: false,
+        type: 'boolean',
     }),
     __metadata("design:type", Boolean)
 ], UserEntity.prototype, "isActive", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        default: null,
-    }),
-    __metadata("design:type", String)
-], UserEntity.prototype, "deleteAt", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'text',
@@ -92,6 +82,14 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "role", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: false }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "activateCode", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: false, type: 'datetime' }),
+    __metadata("design:type", String)
+], UserEntity.prototype, "expiredCode", void 0);
 exports.UserEntity = UserEntity = __decorate([
     (0, typeorm_1.Entity)({
         name: 'users',

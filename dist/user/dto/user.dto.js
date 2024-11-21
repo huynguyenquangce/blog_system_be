@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateUserResponse = exports.DeleteUserResponse = exports.SignUpResponse = exports.UserUpdate = exports.SignInResponse = exports.UserSignIn = exports.UserDto = void 0;
+exports.ActivateDto = exports.UpdateUserResponse = exports.DeleteUserResponse = exports.SignUpResponse = exports.UserUpdate = exports.SignInResponse = exports.UserSignIn = exports.UserDto = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const base_common_1 = require("../../common/base.common");
@@ -42,10 +42,6 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], UserDto.prototype, "password", void 0);
-__decorate([
-    (0, class_transformer_1.Expose)(),
-    __metadata("design:type", String)
-], UserDto.prototype, "accountType", void 0);
 class UserSignIn {
 }
 exports.UserSignIn = UserSignIn;
@@ -122,4 +118,7 @@ exports.DeleteUserResponse = DeleteUserResponse;
 class UpdateUserResponse extends SignUpResponse {
 }
 exports.UpdateUserResponse = UpdateUserResponse;
+class ActivateDto {
+}
+exports.ActivateDto = ActivateDto;
 //# sourceMappingURL=user.dto.js.map

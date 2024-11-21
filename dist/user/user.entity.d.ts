@@ -8,7 +8,8 @@ export declare class UserEntity {
     password: string;
     accountType: string;
     isActive: boolean;
-    deleteAt: string;
     imageURL: string;
     role: string;
+    activateCode: string;
+    expiredCode: string;
 }

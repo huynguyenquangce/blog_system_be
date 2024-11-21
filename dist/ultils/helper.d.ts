@@ -9,3 +9,6 @@ export declare function paginateResponse(data: any, page: any, limit: any): {
     prevPage: number;
     totalPage: number;
 };
+export declare const currentTime: () => string;
+export declare const activationTime: () => string;
+export declare const compareTime: (activation_Time: string) => boolean;

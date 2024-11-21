@@ -7,6 +7,9 @@ export declare class UserDto extends BaseCommon {
     password: string;
     accountType: string;
     imageURL: string;
+    activateCode: string;
+    role: string;
+    expiredCode: string;
 }
 export declare class UserSignIn {
     email: string;
@@ -34,4 +37,8 @@ export declare class SignUpResponse {
 export declare class DeleteUserResponse extends SignUpResponse {
 }
 export declare class UpdateUserResponse extends SignUpResponse {
+}
+export declare class ActivateDto {
+    activateCode: string;
+    id: string;
 }

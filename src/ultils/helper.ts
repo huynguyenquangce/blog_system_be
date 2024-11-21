@@ -1,4 +1,7 @@
 import * as bcrypt from 'bcrypt';
+import * as dayjs from 'dayjs';
+// import utc from 'dayjs/plugin/utc';
+// import timezone from 'dayjs/plugin/timezone.js';
 const saltRounds = 10;
 
 export const hashPassword = async (plainPassword: string) => {
@@ -36,3 +39,23 @@ export function paginateResponse(data, page, limit) {
     totalPage: lastPage,
   };
 }
+
+export const currentTime = () => {
+  const vietnamTime = dayjs();
+  return vietnamTime.format('YYYY-MM-DD HH:mm:ss');
+};
+
+export const activationTime = () => {
+  const vietnamTime = dayjs();
+  const extraTime = vietnamTime.add(5, 'minute');
+  return extraTime.format('YYYY-MM-DD HH:mm:ss');
+};
+
+export const compareTime = (activation_Time: string): boolean => {
+  const current = dayjs();
+  const activateTime = dayjs(activation_Time);
+  if (current.isAfter(activateTime)) return false;
+  else {
+    return true;
+  }
+};

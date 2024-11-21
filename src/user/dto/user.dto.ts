@@ -24,10 +24,15 @@ export class UserDto extends BaseCommon {
   @MinLength(6)
   password: string;
 
-  @Expose()
   accountType: string;
 
   imageURL: string;
+
+  activateCode: string;
+
+  role: string;
+
+  expiredCode: string;
 }
 
 export class UserSignIn {
@@ -88,3 +93,8 @@ export class SignUpResponse {
 
 export class DeleteUserResponse extends SignUpResponse {}
 export class UpdateUserResponse extends SignUpResponse {}
+
+export class ActivateDto {
+  activateCode: string;
+  id: string;
+}

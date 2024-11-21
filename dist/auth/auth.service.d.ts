@@ -1,6 +1,7 @@
+import { HttpStatus } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserSignIn } from 'src/user/dto/user.dto';
+import { ActivateDto, UserDto, UserSignIn } from 'src/user/dto/user.dto';
 export declare class AuthService {
     private readonly userService;
     private readonly jwtService;
@@ -9,4 +10,9 @@ export declare class AuthService {
     signin(user: any): Promise<{
         access_token: string;
     }>;
+    signup(user: UserDto): Promise<{
+        statusCode: HttpStatus;
+        message: string;
+    }>;
+    activate(data: ActivateDto): Promise<"Account already activated" | "Verify account successfully" | "Wrongs activate code, please retry" | "Code has been expired, please click button to resend a activate code">;
 }

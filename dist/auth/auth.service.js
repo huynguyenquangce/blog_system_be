@@ -22,10 +22,14 @@ let AuthService = class AuthService {
     async validateUser(user) {
         try {
             const user_exist = await this.userService.emailExist(user.email);
+            if (!user_exist) {
+                throw new common_1.UnauthorizedException('Invalid credentials');
+            }
             const isMatch = await (0, helper_1.comparePass)(user.password, user_exist.password);
-            if (isMatch)
-                return user_exist;
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            if (!isMatch) {
+                throw new common_1.UnauthorizedException('Invalid credentials');
+            }
+            return user_exist;
         }
         catch (error) {
             throw new common_1.HttpException('Error from server', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
@@ -36,6 +40,12 @@ let AuthService = class AuthService {
         return {
             access_token: await this.jwtService.signAsync(payload),
         };
+    }
+    async signup(user) {
+        return this.userService.signup(user);
+    }
+    async activate(data) {
+        return this.userService.activate(data);
     }
 };
 exports.AuthService = AuthService;

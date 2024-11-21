@@ -47,14 +47,6 @@ let UserController = class UserController {
             throw error;
         }
     }
-    async updateuserbyid(id, updateUserInformation) {
-        try {
-            return this.userService.updateuserbyid(id, updateUserInformation);
-        }
-        catch (error) {
-            throw error;
-        }
-    }
     async findAll(query, take, page) {
         try {
             return this.userService.findAll(query, take, page);
@@ -86,14 +78,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "finduserbyid", null);
-__decorate([
-    (0, common_1.Put)('update/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, user_dto_1.UserUpdate]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "updateuserbyid", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),

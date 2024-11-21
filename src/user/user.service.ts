@@ -12,17 +12,29 @@ import {
   UserSignIn,
   DeleteUserResponse,
   UpdateUserResponse,
+  ActivateDto,
 } from './dto/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import { hashPassword, comparePass, paginateResponse } from 'src/ultils/helper';
+import {
+  hashPassword,
+  comparePass,
+  paginateResponse,
+  compareTime,
+} from 'src/ultils/helper';
+import { v4 as uuidv4 } from 'uuid';
+import { currentTime, activationTime } from 'src/ultils/helper';
+import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   async emailExist(email: string) {
@@ -42,9 +54,23 @@ export class UserService {
     }
     return true;
   };
+
+  async sendEmail(email: string, name: string, code: string) {
+    const sendEmail = this.mailerService.sendMail({
+      to: email,
+      from: this.configService.get('SMTP_USER'),
+      subject: 'Activate your account here',
+      template: 'register',
+      context: {
+        name: name,
+        activationCode: code,
+      },
+    });
+    return sendEmail;
+  }
+
   async signup(user: UserDto) {
     try {
-      user.password = await hashPassword(user.password);
       const existEmail = await this.emailNotExist(user.email);
       if (existEmail) {
         throw new HttpException(
@@ -52,12 +78,28 @@ export class UserService {
           HttpStatus.CONFLICT,
         );
       }
-      const saveUser = await this.userRepository.insert(user);
+      const newUser = {
+        ...user,
+        password: await hashPassword(user.password),
+        imageURL:
+          'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=',
+        activateCode: uuidv4(),
+        createAt: currentTime(),
+        updatedAt: currentTime(),
+        expiredCode: activationTime(),
+      };
+      const saveUser = await this.userRepository.insert(newUser);
       if (saveUser) {
+        const sendEmail = this.sendEmail(
+          newUser.email,
+          newUser.fullName,
+          newUser.activateCode,
+        );
+        console.log(sendEmail);
         return {
-          id: saveUser.identifiers[0].id,
+          // id: saveUser.identifiers[0].id,
           statusCode: HttpStatus.OK,
-          message: 'User Sign Up Successfully',
+          message: `User sign up successfully, please check email:${newUser.email} to activate your account`,
         };
       }
     } catch (error) {
@@ -65,27 +107,29 @@ export class UserService {
     }
   }
 
-  // async signin(user: UserSignIn): Promise<SignInResponse> {
-  //   try {
-  //     const userValid = await this.userRepository.findOne({
-  //       where: { email: user.email, isActive: true },
-  //     });
-  //     if (!userValid) {
-  //       throw new NotFoundException('Email not found or being delete before');
-  //     }
-
-  //     const isMatch = await comparePass(user.password, userValid.password);
-
-  //     if (isMatch) {
-  //       return plainToInstance(SignInResponse, userValid, {
-  //         excludeExtraneousValues: true,
-  //       });
-  //     }
-  //     throw new HttpException('Password Wrong', HttpStatus.UNAUTHORIZED);
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+  async activate(data: ActivateDto) {
+    const user = await this.userRepository.findOneBy({ id: data.id });
+    if (user.isActive === true) {
+      return 'Account already activated';
+    }
+    if (user.isActive === false) {
+      const compare_time = compareTime(user.expiredCode);
+      if (compare_time === true) {
+        if (user.activateCode == data.activateCode) {
+          // Access DB and change isActive = true
+          user.isActive = true;
+          const response = await this.userRepository.update(data.id, user);
+          if (response) {
+            return 'Verify account successfully';
+          }
+        } else {
+          return 'Wrongs activate code, please retry';
+        }
+      } else {
+        return 'Code has been expired, please click button to resend a activate code';
+      }
+    }
+  }
 
   async deleteuser(id: string): Promise<DeleteUserResponse> {
     try {
@@ -136,37 +180,37 @@ export class UserService {
     }
   }
 
-  async updateuserbyid(
-    id: string,
-    updateUserInformation: UserUpdate,
-  ): Promise<UpdateUserResponse> {
-    try {
-      const user = await this.userRepository.findOneBy({ id });
-      if (!user) {
-        throw new HttpException(
-          `Cannot find user with id: ${id} `,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      if (updateUserInformation.password) {
-        updateUserInformation.password = await hashPassword(
-          updateUserInformation.password,
-        );
-      }
-      const updatedUser = { ...user, ...updateUserInformation };
-      // Update User
-      updatedUser.updatedAt = new Date().toLocaleString('en-US', {
-        timeZone: 'Asia/Ho_Chi_Minh',
-      });
-      const response = await this.userRepository.update(id, updatedUser);
-      if (response) {
-        return {
-          statusCode: HttpStatus.OK,
-          message: `Update user by id ${id} successfully `,
-        };
-      }
-    } catch (error) {}
-  }
+  // async updateuserbyid(
+  //   id: string,
+  //   updateUserInformation: UserUpdate,
+  // ): Promise<UpdateUserResponse> {
+  //   try {
+  //     const user = await this.userRepository.findOneBy({ id });
+  //     if (!user) {
+  //       throw new HttpException(
+  //         `Cannot find user with id: ${id} `,
+  //         HttpStatus.NOT_FOUND,
+  //       );
+  //     }
+  //     if (updateUserInformation.password) {
+  //       updateUserInformation.password = await hashPassword(
+  //         updateUserInformation.password,
+  //       );
+  //     }
+  //     const updatedUser = { ...user, ...updateUserInformation };
+  //     // Update User
+  //     updatedUser.updatedAt = new Date().toLocaleString('en-US', {
+  //       timeZone: 'Asia/Ho_Chi_Minh',
+  //     });
+  //     const response = await this.userRepository.update(id, updatedUser);
+  //     if (response) {
+  //       return {
+  //         statusCode: HttpStatus.OK,
+  //         message: `Update user by id ${id} successfully `,
+  //       };
+  //     }
+  //   } catch (error) {}
+  // }
 
   async findAll(query: string, take: number, page: number) {
     const take_param = take || 5;

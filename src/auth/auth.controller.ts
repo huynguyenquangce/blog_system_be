@@ -7,7 +7,7 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserSignIn } from 'src/user/dto/user.dto';
+import { ActivateDto, UserDto, UserSignIn } from 'src/user/dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { JwtAuthGuard } from './passport/jwt-auth.guard';
@@ -21,7 +21,11 @@ export class AuthController {
   @Public()
   @Post('signin')
   @UseGuards(LocalAuthGuard)
-  async handlesignin(@Request() req) {
+  async signin(@Request() req) {
+    const user = req.user;
+    if (user && user.isActive === false) {
+      return { message: 'Please activate your account through email inbox' };
+    }
     return this.authService.signin(req.user);
   }
 
@@ -31,6 +35,24 @@ export class AuthController {
   getProfile(@Request() req) {
     return req.user;
   }
+
+  @Public()
+  @Post('signup')
+  signup(@Body() user: UserDto) {
+    return this.authService.signup(user);
+  }
+
+  @Public()
+  @Post('activate')
+  activate(@Body() data: ActivateDto) {
+    return this.authService.activate(data);
+  }
+
+  // @Public()
+  // @Post('reactivate')
+  // reactivate() {
+
+  // }
 }
 
 // After signin, req will be guarded and go to local.strategy.ts to handle to validate user

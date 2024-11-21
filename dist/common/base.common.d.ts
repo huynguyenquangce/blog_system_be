@@ -1,5 +1,5 @@
 export declare abstract class BaseCommon {
-    createAt: string;
-    updateAt: string;
-    deleteAt: string;
+    createAt: Date;
+    updateAt: Date;
+    deleteAt: Date;
 }

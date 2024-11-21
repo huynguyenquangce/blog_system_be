@@ -70,17 +70,17 @@ export class UserController {
   }
 
   // @UsePipes(new ValidationPipe())
-  @Put('update/:id')
-  async updateuserbyid(
-    @Param('id') id: string,
-    @Body() updateUserInformation: UserUpdate,
-  ): Promise<UpdateUserResponse> {
-    try {
-      return this.userService.updateuserbyid(id, updateUserInformation);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Put('update/:id')
+  // async updateuserbyid(
+  //   @Param('id') id: string,
+  //   @Body() updateUserInformation: UserUpdate,
+  // ): Promise<UpdateUserResponse> {
+  //   try {
+  //     return this.userService.updateuserbyid(id, updateUserInformation);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   @Get()
   async findAll(

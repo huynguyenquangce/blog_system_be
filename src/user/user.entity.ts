@@ -24,17 +24,13 @@ export class UserEntity {
 
   @Column({
     nullable: false,
-    default: new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Ho_Chi_Minh',
-    }),
+    type: 'datetime',
   })
   updatedAt: string;
 
   @Column({
     nullable: false,
-    default: new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Ho_Chi_Minh',
-    }),
+    type: 'datetime',
   })
   createAt: string;
 
@@ -45,20 +41,15 @@ export class UserEntity {
   password: string;
 
   @Column({
-    length: 50,
     default: 'Normal',
   })
   accountType: string;
 
   @Column({
-    default: true,
+    default: false,
+    type: 'boolean',
   })
   isActive: boolean;
-
-  @Column({
-    default: null,
-  })
-  deleteAt: string;
 
   @Column({
     type: 'text',
@@ -69,4 +60,10 @@ export class UserEntity {
     default: 'user',
   })
   role: string;
+
+  @Column({ nullable: false })
+  activateCode: string;
+
+  @Column({ nullable: false, type: 'datetime' })
+  expiredCode: string;
 }
