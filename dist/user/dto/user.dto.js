@@ -98,6 +98,7 @@ __decorate([
     __metadata("design:type", String)
 ], UserUpdate.prototype, "email", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], UserUpdate.prototype, "password", void 0);

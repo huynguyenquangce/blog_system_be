@@ -39,14 +39,6 @@ let UserController = class UserController {
             throw error;
         }
     }
-    async finduserbyid(id) {
-        try {
-            return this.userService.finduserbyid(id);
-        }
-        catch (error) {
-            throw error;
-        }
-    }
     async findAll(query, take, page) {
         try {
             return this.userService.findAll(query, take, page);
@@ -71,13 +63,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "deleteuser", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "finduserbyid", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)()),

@@ -5,4 +5,5 @@ export declare class BlogEntity {
     createAt: string;
     updatedAt: string;
     imageURL: string;
+    categoryID: string;
 }

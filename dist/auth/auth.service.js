@@ -47,6 +47,12 @@ let AuthService = class AuthService {
     async activate(data) {
         return this.userService.activate(data);
     }
+    async profile(id) {
+        return this.userService.profile(id);
+    }
+    async updateuserbyid(id, updateUserInformation) {
+        return this.userService.updateuserbyid(id, updateUserInformation);
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

@@ -95,7 +95,7 @@ export class UserService {
           newUser.fullName,
           newUser.activateCode,
         );
-        console.log(sendEmail);
+        console.log(sendEmail, 'check point');
         return {
           // id: saveUser.identifiers[0].id,
           statusCode: HttpStatus.OK,
@@ -108,7 +108,7 @@ export class UserService {
   }
 
   async activate(data: ActivateDto) {
-    const user = await this.userRepository.findOneBy({ id: data.id });
+    const user = await this.userRepository.findOneBy({ email: data.email });
     if (user.isActive === true) {
       return 'Account already activated';
     }
@@ -118,7 +118,10 @@ export class UserService {
         if (user.activateCode == data.activateCode) {
           // Access DB and change isActive = true
           user.isActive = true;
-          const response = await this.userRepository.update(data.id, user);
+          const response = await this.userRepository.update(
+            { email: data.email },
+            user,
+          );
           if (response) {
             return 'Verify account successfully';
           }
@@ -154,7 +157,7 @@ export class UserService {
     }
   }
 
-  async finduserbyid(id: string): Promise<SignInResponse> {
+  async profile(id: string): Promise<SignInResponse> {
     try {
       const response = this.userRepository.findOne({
         where: {
@@ -180,37 +183,37 @@ export class UserService {
     }
   }
 
-  // async updateuserbyid(
-  //   id: string,
-  //   updateUserInformation: UserUpdate,
-  // ): Promise<UpdateUserResponse> {
-  //   try {
-  //     const user = await this.userRepository.findOneBy({ id });
-  //     if (!user) {
-  //       throw new HttpException(
-  //         `Cannot find user with id: ${id} `,
-  //         HttpStatus.NOT_FOUND,
-  //       );
-  //     }
-  //     if (updateUserInformation.password) {
-  //       updateUserInformation.password = await hashPassword(
-  //         updateUserInformation.password,
-  //       );
-  //     }
-  //     const updatedUser = { ...user, ...updateUserInformation };
-  //     // Update User
-  //     updatedUser.updatedAt = new Date().toLocaleString('en-US', {
-  //       timeZone: 'Asia/Ho_Chi_Minh',
-  //     });
-  //     const response = await this.userRepository.update(id, updatedUser);
-  //     if (response) {
-  //       return {
-  //         statusCode: HttpStatus.OK,
-  //         message: `Update user by id ${id} successfully `,
-  //       };
-  //     }
-  //   } catch (error) {}
-  // }
+  async updateuserbyid(
+    id: string,
+    updateUserInformation: UserUpdate,
+  ): Promise<UpdateUserResponse> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new HttpException(
+          `Cannot find user with id: ${id} `,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      if (updateUserInformation.password) {
+        updateUserInformation.password = await hashPassword(
+          updateUserInformation.password,
+        );
+      }
+      const updatedUser = { ...user, ...updateUserInformation };
+      // Update User
+      updatedUser.updatedAt = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+      });
+      const response = await this.userRepository.update(id, updatedUser);
+      if (response) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: `Update user by id ${id} successfully `,
+        };
+      }
+    } catch (error) {}
+  }
 
   async findAll(query: string, take: number, page: number) {
     const take_param = take || 5;

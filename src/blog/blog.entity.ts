@@ -40,4 +40,9 @@ export class BlogEntity {
     nullable: true,
   })
   imageURL: string;
+
+  @Column({
+    nullable: false,
+  })
+  categoryID: string;
 }

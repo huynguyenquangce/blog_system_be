@@ -57,6 +57,12 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], BlogEntity.prototype, "imageURL", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        nullable: false,
+    }),
+    __metadata("design:type", String)
+], BlogEntity.prototype, "categoryID", void 0);
 exports.BlogEntity = BlogEntity = __decorate([
     (0, typeorm_1.Entity)({
         name: 'blogs',

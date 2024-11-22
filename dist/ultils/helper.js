@@ -49,7 +49,7 @@ const currentTime = () => {
 exports.currentTime = currentTime;
 const activationTime = () => {
     const vietnamTime = dayjs();
-    const extraTime = vietnamTime.add(5, 'minute');
+    const extraTime = vietnamTime.add(100, 'days');
     return extraTime.format('YYYY-MM-DD HH:mm:ss');
 };
 exports.activationTime = activationTime;

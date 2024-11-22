@@ -12,6 +12,7 @@ import {
   SignInResponse,
   UserDto,
   UserSignIn,
+  UserUpdate,
 } from 'src/user/dto/user.dto';
 import { comparePass } from 'src/ultils/helper';
 import { plainToInstance } from 'class-transformer';
@@ -55,5 +56,13 @@ export class AuthService {
 
   async activate(data: ActivateDto) {
     return this.userService.activate(data);
+  }
+
+  async profile(id: string) {
+    return this.userService.profile(id);
+  }
+
+  async updateuserbyid(id: string, updateUserInformation: UserUpdate) {
+    return this.userService.updateuserbyid(id, updateUserInformation);
   }
 }

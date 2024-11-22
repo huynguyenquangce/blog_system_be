@@ -26,7 +26,7 @@ export declare class SignInResponse {
 }
 export declare class UserUpdate {
     email: string;
-    password: string;
+    password?: string;
     lastName: string;
     firstName: string;
 }
@@ -40,5 +40,5 @@ export declare class UpdateUserResponse extends SignUpResponse {
 }
 export declare class ActivateDto {
     activateCode: string;
-    id: string;
+    email: string;
 }

@@ -1,5 +1,11 @@
 import { Expose, Transform } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 import { BaseCommon } from 'src/common/base.common';
 
 export class UserDto extends BaseCommon {
@@ -75,8 +81,9 @@ export class UserUpdate {
   @IsEmail()
   email: string;
 
+  @IsOptional()
   @MinLength(6)
-  password: string;
+  password?: string;
 
   @IsString()
   lastName: string;
@@ -96,5 +103,5 @@ export class UpdateUserResponse extends SignUpResponse {}
 
 export class ActivateDto {
   activateCode: string;
-  id: string;
+  email: string;
 }

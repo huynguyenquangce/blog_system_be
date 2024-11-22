@@ -5,9 +5,22 @@ import {
   UseGuards,
   Request,
   Get,
+  HttpException,
+  UnauthorizedException,
+  HttpStatus,
+  UsePipes,
+  ValidationPipe,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ActivateDto, UserDto, UserSignIn } from 'src/user/dto/user.dto';
+import {
+  ActivateDto,
+  UpdateUserResponse,
+  UserDto,
+  UserSignIn,
+  UserUpdate,
+} from 'src/user/dto/user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { JwtAuthGuard } from './passport/jwt-auth.guard';
@@ -23,8 +36,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   async signin(@Request() req) {
     const user = req.user;
+    console.log(user);
     if (user && user.isActive === false) {
-      return { message: 'Please activate your account through email inbox' };
+      throw new HttpException(
+        'Please activate your account',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     return this.authService.signin(req.user);
   }
@@ -33,7 +50,7 @@ export class AuthController {
   // @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return this.authService.profile(req.user.id);
   }
 
   @Public()
@@ -48,11 +65,25 @@ export class AuthController {
     return this.authService.activate(data);
   }
 
-  // @Public()
-  // @Post('reactivate')
-  // reactivate() {
+  @Post('reactivate')
+  reactivate(@Request() req) {
+    const id = req.user.id;
+    console.log(id);
+  }
 
-  // }
+  @UsePipes(new ValidationPipe())
+  @Put('update/:id')
+  async updateuserbyid(
+    @Param('id') id: string,
+    @Body() updateUserInformation: UserUpdate,
+  ): Promise<UpdateUserResponse> {
+    try {
+      // return this.userService.updateuserbyid(id, updateUserInformation);
+      return this.authService.updateuserbyid(id, updateUserInformation);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // After signin, req will be guarded and go to local.strategy.ts to handle to validate user

@@ -77,7 +77,7 @@ let UserService = class UserService {
             const saveUser = await this.userRepository.insert(newUser);
             if (saveUser) {
                 const sendEmail = this.sendEmail(newUser.email, newUser.fullName, newUser.activateCode);
-                console.log(sendEmail);
+                console.log(sendEmail, 'check point');
                 return {
                     statusCode: common_1.HttpStatus.OK,
                     message: `User sign up successfully, please check email:${newUser.email} to activate your account`,
@@ -89,7 +89,7 @@ let UserService = class UserService {
         }
     }
     async activate(data) {
-        const user = await this.userRepository.findOneBy({ id: data.id });
+        const user = await this.userRepository.findOneBy({ email: data.email });
         if (user.isActive === true) {
             return 'Account already activated';
         }
@@ -98,7 +98,7 @@ let UserService = class UserService {
             if (compare_time === true) {
                 if (user.activateCode == data.activateCode) {
                     user.isActive = true;
-                    const response = await this.userRepository.update(data.id, user);
+                    const response = await this.userRepository.update({ email: data.email }, user);
                     if (response) {
                         return 'Verify account successfully';
                     }
@@ -131,7 +131,7 @@ let UserService = class UserService {
             throw error;
         }
     }
-    async finduserbyid(id) {
+    async profile(id) {
         try {
             const response = this.userRepository.findOne({
                 where: {
@@ -153,6 +153,29 @@ let UserService = class UserService {
         catch (error) {
             throw error;
         }
+    }
+    async updateuserbyid(id, updateUserInformation) {
+        try {
+            const user = await this.userRepository.findOneBy({ id });
+            if (!user) {
+                throw new common_1.HttpException(`Cannot find user with id: ${id} `, common_1.HttpStatus.NOT_FOUND);
+            }
+            if (updateUserInformation.password) {
+                updateUserInformation.password = await (0, helper_1.hashPassword)(updateUserInformation.password);
+            }
+            const updatedUser = { ...user, ...updateUserInformation };
+            updatedUser.updatedAt = new Date().toLocaleString('en-US', {
+                timeZone: 'Asia/Ho_Chi_Minh',
+            });
+            const response = await this.userRepository.update(id, updatedUser);
+            if (response) {
+                return {
+                    statusCode: common_1.HttpStatus.OK,
+                    message: `Update user by id ${id} successfully `,
+                };
+            }
+        }
+        catch (error) { }
     }
     async findAll(query, take, page) {
         const take_param = take || 5;

@@ -24,19 +24,32 @@ let AuthController = class AuthController {
     }
     async signin(req) {
         const user = req.user;
+        console.log(user);
         if (user && user.isActive === false) {
-            return { message: 'Please activate your account through email inbox' };
+            throw new common_1.HttpException('Please activate your account', common_1.HttpStatus.UNAUTHORIZED);
         }
         return this.authService.signin(req.user);
     }
     getProfile(req) {
-        return req.user;
+        return this.authService.profile(req.user.id);
     }
     signup(user) {
         return this.authService.signup(user);
     }
     activate(data) {
         return this.authService.activate(data);
+    }
+    reactivate(req) {
+        const id = req.user.id;
+        console.log(id);
+    }
+    async updateuserbyid(id, updateUserInformation) {
+        try {
+            return this.authService.updateuserbyid(id, updateUserInformation);
+        }
+        catch (error) {
+            throw error;
+        }
     }
 };
 exports.AuthController = AuthController;
@@ -72,6 +85,22 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.ActivateDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "activate", null);
+__decorate([
+    (0, common_1.Post)('reactivate'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "reactivate", null);
+__decorate([
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    (0, common_1.Put)('update/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, user_dto_1.UserUpdate]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "updateuserbyid", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
