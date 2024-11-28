@@ -13,12 +13,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/passport/jwt-auth.guard';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { CategoryEntity } from './category/category.entity';
+import { CategoryModule } from './category/category.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     UserModule,
+    CategoryModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
@@ -26,15 +29,12 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
       username: 'huy',
       password: 'root',
       database: 'blog_system',
-      entities: [UserEntity, BlogEntity],
+      entities: [UserEntity, BlogEntity, CategoryEntity],
       synchronize: true,
     }),
     UploadModule,
     BlogModule,
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true, // Makes the configuration available globally
-    }),
     MailerModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         transport: {

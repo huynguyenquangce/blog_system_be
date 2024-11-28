@@ -22,6 +22,8 @@ const core_1 = require("@nestjs/core");
 const jwt_auth_guard_1 = require("./auth/passport/jwt-auth.guard");
 const mailer_1 = require("@nestjs-modules/mailer");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const category_entity_1 = require("./category/category.entity");
+const category_module_1 = require("./category/category.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true,
             }),
             user_module_1.UserModule,
+            category_module_1.CategoryModule,
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mysql',
                 host: 'localhost',
@@ -39,15 +42,12 @@ exports.AppModule = AppModule = __decorate([
                 username: 'huy',
                 password: 'root',
                 database: 'blog_system',
-                entities: [user_entity_1.UserEntity, blog_entity_1.BlogEntity],
+                entities: [user_entity_1.UserEntity, blog_entity_1.BlogEntity, category_entity_1.CategoryEntity],
                 synchronize: true,
             }),
             upload_module_1.UploadModule,
             blog_module_1.BlogModule,
             auth_module_1.AuthModule,
-            config_1.ConfigModule.forRoot({
-                isGlobal: true,
-            }),
             mailer_1.MailerModule.forRootAsync({
                 useFactory: async (configService) => ({
                     transport: {

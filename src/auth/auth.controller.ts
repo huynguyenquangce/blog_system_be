@@ -25,18 +25,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './passport/local-auth.guard';
 import { JwtAuthGuard } from './passport/jwt-auth.guard';
 import { Public } from 'src/decorator/publicRoute';
-
+import { HasRoles } from './passport/has-roles.decorator';
+import { Role } from './passport/role/role.enum';
+import { RolesGuard } from './passport/roles.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // Guard co nhiem vu check user da dang nhap hay chua, neu dang nhap roi thi tra về user @Request() req, sau đó get token bằng cách  return this.authService.signin(req.user);
+  // LocalAuthGuard co nhiem vu check user da dang nhap hay chua, neu dang nhap dung tai khoan mat khau roi thi tra về user @Request() req, sau đó get token bằng cách return this.authService.signin(req.user);
   @Public()
   @Post('signin')
   @UseGuards(LocalAuthGuard)
   async signin(@Request() req) {
     const user = req.user;
-    console.log(user);
     if (user && user.isActive === false) {
       throw new HttpException(
         'Please activate your account',
@@ -47,7 +48,8 @@ export class AuthController {
   }
 
   // Guard có nhiệm vụ check access_token trong bearer token truyền lên, nếu chưa có trả lỗi, có rồi thì trả về user @Request() req, sau đó xử lí tiếp endpoint
-  // @UseGuards(JwtAuthGuard)
+  @HasRoles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return this.authService.profile(req.user.id);

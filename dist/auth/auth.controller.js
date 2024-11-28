@@ -17,14 +17,17 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const user_dto_1 = require("../user/dto/user.dto");
 const local_auth_guard_1 = require("./passport/local-auth.guard");
+const jwt_auth_guard_1 = require("./passport/jwt-auth.guard");
 const publicRoute_1 = require("../decorator/publicRoute");
+const has_roles_decorator_1 = require("./passport/has-roles.decorator");
+const role_enum_1 = require("./passport/role/role.enum");
+const roles_guard_1 = require("./passport/roles.guard");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     async signin(req) {
         const user = req.user;
-        console.log(user);
         if (user && user.isActive === false) {
             throw new common_1.HttpException('Please activate your account', common_1.HttpStatus.UNAUTHORIZED);
         }
@@ -63,6 +66,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signin", null);
 __decorate([
+    (0, has_roles_decorator_1.HasRoles)(role_enum_1.Role.Admin, role_enum_1.Role.User),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Get)('profile'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
