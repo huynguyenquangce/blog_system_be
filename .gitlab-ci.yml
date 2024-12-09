@@ -33,6 +33,7 @@ run:
     - docker pull ${IMAGE_NAME}
     - pwd
     - docker ps
+    - docker compose -f docker-compose.yml down    # delete all resource container before run container
     - docker compose -f docker-compose.yml up -d
   only:
     - tags
