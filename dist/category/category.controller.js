@@ -15,6 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryController = void 0;
 const common_1 = require("@nestjs/common");
 const category_service_1 = require("./category.service");
+const has_roles_decorator_1 = require("../auth/passport/has-roles.decorator");
+const role_enum_1 = require("../auth/passport/role/role.enum");
+const jwt_auth_guard_1 = require("../auth/passport/jwt-auth.guard");
+const roles_guard_1 = require("../auth/passport/roles.guard");
 let CategoryController = class CategoryController {
     constructor(categoryService) {
         this.categoryService = categoryService;
@@ -25,6 +29,8 @@ let CategoryController = class CategoryController {
 };
 exports.CategoryController = CategoryController;
 __decorate([
+    (0, has_roles_decorator_1.HasRoles)(role_enum_1.Role.Admin),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, common_1.Post)('insert'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

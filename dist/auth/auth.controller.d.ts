@@ -13,6 +13,5 @@ export declare class AuthController {
         message: string;
     }>;
     activate(data: ActivateDto): Promise<"Account already activated" | "Verify account successfully" | "Wrongs activate code, please retry" | "Code has been expired, please click button to resend a activate code">;
-    reactivate(req: any): void;
     updateuserbyid(id: string, updateUserInformation: UserUpdate): Promise<UpdateUserResponse>;
 }

@@ -48,8 +48,8 @@ export class AuthController {
   }
 
   // Guard có nhiệm vụ check access_token trong bearer token truyền lên, nếu chưa có trả lỗi, có rồi thì trả về user @Request() req, sau đó xử lí tiếp endpoint
-  @HasRoles(Role.Admin, Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @HasRoles(Role.Admin, Role.User)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return this.authService.profile(req.user.id);
@@ -67,11 +67,11 @@ export class AuthController {
     return this.authService.activate(data);
   }
 
-  @Post('reactivate')
-  reactivate(@Request() req) {
-    const id = req.user.id;
-    console.log(id);
-  }
+  // @Post('reactivate')
+  // reactivate(@Request() req) {
+  //   const id = req.user.id;
+  //   console.log(id);
+  // }
 
   @UsePipes(new ValidationPipe())
   @Put('update/:id')
